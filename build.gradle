@@ -8,6 +8,7 @@ plugins {
     id 'eclipse'
     id 'com.gtnewhorizons.retrofuturagradle' version '1.3.16'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id "org.jetbrains.kotlin.jvm" version "1.6.21"
 }
 
 version = project.mod_version
@@ -43,7 +44,7 @@ minecraft {
     mcpMappingVersion = '39'
     
     // Set username here, the UUID will be looked up automatically
-    username = 'Developer'
+    username = 'klebe0815'
     
     // Add any additional tweaker classes here
     // extraTweakClasses.add('org.spongepowered.asm.launch.MixinTweaker')
@@ -92,6 +93,16 @@ repositories {
             includeGroup 'curse.maven'
         }
     }
+    maven {
+        url "https://maven.shadowfacts.net/"
+    }
+    maven {
+        url "https://maven.cil.li/"
+    }
+    maven {
+        name "Cyclops Repo"
+        url "https://maven.pkg.github.com/CyclopsMC/packages"
+    }
     mavenLocal() // Must be last for caching to work
 }
 
@@ -119,6 +130,10 @@ dependencies {
             transitive = false
         }
     }
+
+    implementation "net.shadowfacts:Forgelin:1.8.4"
+    implementation "li.cil.oc:OpenComputers:MC1.12.2-1.7.5.+:api"
+    implementation rfg.deobf('curse.maven:integrated-dynamics-236307:3159505')
 
 }
 
@@ -204,4 +219,14 @@ idea {
 
 tasks.named("processIdeaSettings").configure {
     dependsOn("injectTags")
+}
+
+tasks.named("injectTags").configure {
+    dependsOn("compileInjectedTagsKotlin")
+}
+tasks.named("decompressDecompiledSources").configure {
+    dependsOn("compilePatchedMcKotlin")
+}
+tasks.named("createMcLauncherFiles").configure {
+    dependsOn("compileMcLauncherKotlin")
 }

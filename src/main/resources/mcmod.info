@@ -1,16 +1,22 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
+  "modid": "ocid",
+  "name": "OCID",
   "description": "Example placeholder mod.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["CleanroomMC"],
-  "credits": "Authors of this project",
+  "authorList": ["Klebe0815"],
+  "credits": "Powered By Ender-Developmend",
   "logoFile": "",
   "screenshots": [],
-  "dependencies": []
+  "requiredMods": [
+      "forge@[14.23.5.2858,)",
+      "opencomputers@[1.7.0,)",
+      "integrateddynamics@[1.1.0,)"
+  ],
+  "dependencies": [
+  ]
 }
 ]
