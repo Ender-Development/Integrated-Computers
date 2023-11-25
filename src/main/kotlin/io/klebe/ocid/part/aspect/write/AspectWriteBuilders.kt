@@ -51,16 +51,7 @@ object AspectWriteBuilders {
             ){
                 val targetPos: BlockPos = target.target.pos.blockPos
                 val world: World = target.target.pos.world!!
-
-                val myPos = when (target.target.side) {
-                    EnumFacing.DOWN -> targetPos.up()
-                    EnumFacing.UP -> targetPos.down()
-                    EnumFacing.NORTH -> targetPos.south()
-                    EnumFacing.SOUTH -> targetPos.north()
-                    EnumFacing.WEST -> targetPos.east()
-                    EnumFacing.EAST -> targetPos.west()
-                    else -> throw IllegalStateException("Invalid Side: ${target.target.side}")
-                }
+                val myPos = target.center.pos.blockPos!!
 
                 blockState.neighborChanged(
                     world,
@@ -77,10 +68,25 @@ object AspectWriteBuilders {
                 activation: Boolean,
                 crossinline block: ()->Unit
             ){
+                // GitHub Copilot:
                 // q: is an intellisense error here?
                 // a: yes, but it's a bug in intellisense, not in the code
                 // q: how do you know?
                 // a: because it compiles
+                // q: how can i fix it?
+                // a: you can't, you just have to live with it
+                // q: where comes the error from?
+                // a: the error comes from the fact that the compiler can't infer the type of the lambda
+                // q: why can't the compiler infer the type of the lambda?
+                // a: because the compiler is stupid
+                // q: 'target.target.pos.world' intellisense means 'target.target.pos.world' is not accessible
+                // q: "Cannot access class 'net.minecraft.world.World'. Check your module classpath for missing or conflicting dependencies"
+                // a: that's a bug in intellisense, not in the code
+                // q: i know but why does it happen?
+                // a: because the compiler is stupid
+                // q: that doesn't get me any further
+                // a: i know
+                // ¯\_(ツ)_/¯
                 val world: World = target.target.pos.world!!
                 val pos: BlockPos = target.target.pos.blockPos!!
 
@@ -101,6 +107,7 @@ object AspectWriteBuilders {
                 p2: S
             ) = alwaysAnd(p0, target, p2, false) {
                 OCID.log.info(this.javaClass.name + "::onDeactivate called") // TODO
+                WriteComputerComponent.states.remove(target.center.pos)
             }
 
             override fun <P : IPartTypeWriter<P, S>?, S : IPartStateWriter<P>?> onActivate(
@@ -119,24 +126,11 @@ object AspectWriteBuilders {
 
         val KIND = "computer"
 
-        val PROP_EXPORT_BOOLEAN = AspectPropertyTypeInstance(
-            ValueTypes.BOOLEAN,
-            "aspect.aspecttypes.ocid.boolean.export_boolean")
-
         val PROP_BOOLEAN_SET =
             IAspectValuePropagator<ApacheTriple<PartTarget, IAspectProperties, Boolean>, Unit> { input ->
-                input.middle.getValue(PROP_EXPORT_BOOLEAN)?.rawValue?.let {
-                    WRITE_COMPUTER_COMPONENT.exportBoolean(input.left, it)
-                }
+                WRITE_COMPUTER_COMPONENT.exportBoolean(input.left, input.right)
             }
 
-        val PROPERTIES_COMPUTER = AspectProperties(listOf(
-            PROP_EXPORT_BOOLEAN
-        ))
-
-        init {
-            PROPERTIES_COMPUTER.setValue(PROP_EXPORT_BOOLEAN, ValueTypeBoolean.ValueBoolean.of(false))
-        }
 
         val BUILDER_BOOLEAN
             = CyclopsAspectWriteBuilders.BUILDER_BOOLEAN
@@ -144,6 +138,5 @@ object AspectWriteBuilders {
                 .handle(CyclopsAspectWriteBuilders.PROP_GET_BOOLEAN)
                 .appendDeactivator(DEACTIVATOR)
                 .appendActivator(ACTIVATOR)
-                .withProperties(PROPERTIES_COMPUTER);
     }
 }

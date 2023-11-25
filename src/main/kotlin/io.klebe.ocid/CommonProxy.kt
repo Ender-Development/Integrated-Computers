@@ -1,5 +1,6 @@
 package io.klebe.ocid
 
+import io.klebe.ocid.oc.Driver
 import io.klebe.ocid.part.PartTypeComputerWriter
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer
 import net.minecraft.tileentity.TileEntity
@@ -25,6 +26,7 @@ open class CommonProxy : CommonProxyComponent() {
 
     open fun init(e: FMLInitializationEvent) {
         OCID.log.info("init")
+        li.cil.oc.api.Driver.add(Driver)
     }
 
     open fun postInit(e: FMLPostInitializationEvent) {

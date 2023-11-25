@@ -1,12 +1,14 @@
 package io.klebe.ocid.part.aspect.write.computer
 
 import io.klebe.ocid.OCID
-import net.minecraft.util.math.BlockPos
-import net.minecraft.world.World
+import org.cyclops.cyclopscore.datastructure.DimPos
 import org.cyclops.integrateddynamics.api.part.PartTarget
 
 object WriteComputerComponent : IWriteComputerComponent {
+
+    val states: MutableMap<DimPos, Any?> = mutableMapOf()
     override fun exportBoolean(target: PartTarget, value: Boolean) {
-        OCID.log.info("Write $value to ${target.target.pos}")
+        states[target.center.pos] = value
+        OCID.log.info("Saving $value to ${target.center.pos}")
     }
 }
