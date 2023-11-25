@@ -134,7 +134,11 @@ dependencies {
     implementation "net.shadowfacts:Forgelin:1.8.4"
     implementation "li.cil.oc:OpenComputers:MC1.12.2-1.7.5.+:api"
     implementation rfg.deobf('curse.maven:integrated-dynamics-236307:3159505')
+    implementation rfg.deobf('curse.maven:common-capabilities-247007:3053017')
+    implementation rfg.deobf('curse.maven:cyclops-core-232758:3159497')
 
+    runtimeOnly rfg.deobf('curse.maven:opencomputers-223008:4630537')
+    runtimeOnly rfg.deobf('curse.maven:jei-238222:4538010')
 }
 
 // Adds Access Transformer files to tasks
