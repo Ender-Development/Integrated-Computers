@@ -1,4 +1,4 @@
-package io.klebe.ocid.oc
+package io.klebe.ocid.compat.oc
 
 import li.cil.oc.api.machine.Arguments
 import li.cil.oc.api.machine.Context

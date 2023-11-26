@@ -1,6 +1,6 @@
-package io.klebe.ocid.oc
+package io.klebe.ocid.compat.oc
 
-import io.klebe.ocid.part.IPartTypeComputerCompat
+import io.klebe.ocid.compat.part.IPartTypeComputerCompat
 import li.cil.oc.api.driver.NamedBlock
 import li.cil.oc.api.machine.Arguments
 import li.cil.oc.api.machine.Context
@@ -8,9 +8,9 @@ import li.cil.oc.api.Network
 import li.cil.oc.api.network.ManagedPeripheral
 import li.cil.oc.api.network.Visibility
 import li.cil.oc.api.prefab.AbstractManagedEnvironment
-import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import org.cyclops.cyclopscore.datastructure.DimPos
+import org.cyclops.integrateddynamics.api.part.PartPos
 import org.cyclops.integrateddynamics.core.tileentity.TileMultipartTicking
 
 class Environment(val tileEntity: TileMultipartTicking, val part: IPartTypeComputerCompat, val side: EnumFacing) :
@@ -54,7 +54,7 @@ class Environment(val tileEntity: TileMultipartTicking, val part: IPartTypeCompu
         }
     }
 
-    val position: DimPos = tileEntity.partContainer.position
+    val position: PartPos = PartPos.of(tileEntity.partContainer.position, side)
 
     override fun methods(): Array<String> = part.luaMethods.map { it.name }.toMutableList().let {
         it.add("help")

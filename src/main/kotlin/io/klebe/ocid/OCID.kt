@@ -1,6 +1,6 @@
 package io.klebe.ocid
 
-import io.klebe.ocid.part.PartTypeComputerWriter
+import io.klebe.ocid.compat.id.part.PartTypeComputerWriter
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack

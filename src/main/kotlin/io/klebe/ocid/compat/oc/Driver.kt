@@ -1,7 +1,6 @@
-package io.klebe.ocid.oc
+package io.klebe.ocid.compat.oc
 
-import io.klebe.ocid.OCID
-import io.klebe.ocid.part.IPartTypeComputerCompat
+import io.klebe.ocid.compat.part.IPartTypeComputerCompat
 import li.cil.oc.api.driver.DriverBlock
 import li.cil.oc.api.network.ManagedEnvironment
 import net.minecraft.util.EnumFacing

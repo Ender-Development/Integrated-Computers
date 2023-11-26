@@ -1,6 +1,6 @@
-package io.klebe.ocid.part
+package io.klebe.ocid.compat.part
 
-import io.klebe.ocid.oc.LuaMethode
+import io.klebe.ocid.compat.oc.LuaMethode
 
 interface IPartTypeComputerCompat {
     val preferredName: String

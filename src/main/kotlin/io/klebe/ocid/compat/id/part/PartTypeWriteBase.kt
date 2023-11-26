@@ -1,4 +1,4 @@
-package io.klebe.ocid.part
+package io.klebe.ocid.compat.id.part
 
 import io.klebe.ocid.OCID
 import org.cyclops.cyclopscore.init.ModBase

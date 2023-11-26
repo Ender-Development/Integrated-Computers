@@ -1,27 +1,30 @@
-package io.klebe.ocid.part.aspect.write
+package io.klebe.ocid.compat.id.part.aspect.write
 
 import io.klebe.ocid.OCID
-import io.klebe.ocid.part.aspect.write.computer.IWriteComputerComponent
-import io.klebe.ocid.part.aspect.write.computer.WriteComputerComponent
+import io.klebe.ocid.compat.id.evaluate.variable.ValueNumber
+import io.klebe.ocid.compat.id.part.aspect.write.computer.IWriteComputerComponent
+import io.klebe.ocid.compat.id.part.aspect.write.computer.WriteComputerComponent
 import net.minecraft.block.state.IBlockState
 import net.minecraft.init.Blocks
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
-import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
+import org.apache.commons.lang3.tuple.Triple
+import org.cyclops.integrateddynamics.api.evaluate.variable.IValue
+import org.cyclops.integrateddynamics.api.evaluate.variable.IValueType
 import org.cyclops.integrateddynamics.api.part.PartTarget
 import org.cyclops.integrateddynamics.api.part.aspect.property.IAspectProperties
 import org.cyclops.integrateddynamics.api.part.write.IPartStateWriter
 import org.cyclops.integrateddynamics.api.part.write.IPartTypeWriter
-import org.cyclops.integrateddynamics.core.evaluate.variable.ValueTypeBoolean
+import org.cyclops.integrateddynamics.core.evaluate.variable.ValueTypeBoolean.ValueBoolean
+import org.cyclops.integrateddynamics.core.evaluate.variable.ValueTypeCategoryNumber
 import org.cyclops.integrateddynamics.core.evaluate.variable.ValueTypes
 import org.cyclops.integrateddynamics.core.part.aspect.build.AspectBuilder
 import org.cyclops.integrateddynamics.core.part.aspect.build.IAspectValuePropagator
 import org.cyclops.integrateddynamics.core.part.aspect.build.IAspectWriteActivator
 import org.cyclops.integrateddynamics.core.part.aspect.build.IAspectWriteDeactivator
-import org.cyclops.integrateddynamics.core.part.aspect.property.AspectProperties
-import org.cyclops.integrateddynamics.core.part.aspect.property.AspectPropertyTypeInstance
-import java.lang.IllegalStateException
+import org.cyclops.integrateddynamics.part.aspect.write.AspectWriteBuilders
 
 typealias CyclopsAspectWriteBuilders = org.cyclops.integrateddynamics.part.aspect.write.AspectWriteBuilders
 typealias ApacheTriple<A, B, C> = org.apache.commons.lang3.tuple.Triple<A, B, C>
@@ -30,13 +33,14 @@ object AspectWriteBuilders {
 
     object Computer {
 
+        @Suppress("UNUSED_PARAMETER")
         object EventHandler : IAspectWriteDeactivator, IAspectWriteActivator {
 
             private fun <P : IPartTypeWriter<P, S>?, S : IPartStateWriter<P>?> onTileEntityTarget(
                 tileEntity: TileEntity,
-                p0: P,
+                partType: P,
                 target: PartTarget,
-                p2: S,
+                partState: S,
                 activation: Boolean,
             ){
 
@@ -44,27 +48,27 @@ object AspectWriteBuilders {
 
             private fun <P : IPartTypeWriter<P, S>?, S : IPartStateWriter<P>?> onBlockTarget(
                 blockState: IBlockState,
-                p0: P,
+                partType: P,
                 target: PartTarget,
-                p2: S,
+                partState: S,
                 activation: Boolean,
             ){
                 val targetPos: BlockPos = target.target.pos.blockPos
                 val world: World = target.target.pos.world!!
-                val myPos = target.center.pos.blockPos!!
+                val myPos: BlockPos = target.center.pos.blockPos!!
 
                 blockState.neighborChanged(
                     world,
-                    target.target.pos.blockPos,
+                    targetPos,
                     world.getBlockState(myPos).block,
                     myPos
                 )
             }
 
             private inline fun  <P : IPartTypeWriter<P, S>?, S : IPartStateWriter<P>?> alwaysAnd(
-                p0: P,
+                partType: P,
                 target: PartTarget,
-                p2: S,
+                partState: S,
                 activation: Boolean,
                 crossinline block: ()->Unit
             ){
@@ -92,29 +96,29 @@ object AspectWriteBuilders {
 
                 world.getBlockState(pos).let{bs ->
                     if (bs.block != Blocks.AIR) {
-                        onBlockTarget(bs, p0, target, p2, activation)
+                        onBlockTarget(bs, partType, target, partState, activation)
                     }
                 }
 
-                world.getTileEntity(pos)?.let {te -> onTileEntityTarget(te, p0, target, p2, activation) }
+                world.getTileEntity(pos)?.let {te -> onTileEntityTarget(te, partType, target, partState, activation) }
 
                 block()
             }
 
             override fun <P : IPartTypeWriter<P, S>?, S : IPartStateWriter<P>?> onDeactivate(
-                p0: P,
+                partType: P,
                 target: PartTarget,
                 p2: S
-            ) = alwaysAnd(p0, target, p2, false) {
+            ) = alwaysAnd(partType, target, p2, false) {
                 OCID.log.info(this.javaClass.name + "::onDeactivate called") // TODO
-                WriteComputerComponent.states.remove(target.center.pos)
+                WriteComputerComponent.states.remove(target.center)
             }
 
             override fun <P : IPartTypeWriter<P, S>?, S : IPartStateWriter<P>?> onActivate(
-                p0: P,
+                partType: P,
                 target: PartTarget,
                 p2: S
-            ) = alwaysAnd(p0, target, p2, true) {
+            ) = alwaysAnd(partType, target, p2, true) {
                 OCID.log.info(this.javaClass.name + "::onActivate called") // TODO
             }
         }
@@ -131,12 +135,56 @@ object AspectWriteBuilders {
                 WRITE_COMPUTER_COMPONENT.exportBoolean(input.left, input.right)
             }
 
+        val PROP_NUMBER_SET =
+            IAspectValuePropagator<ApacheTriple<PartTarget, IAspectProperties, Number>, Unit> { input ->
+                WRITE_COMPUTER_COMPONENT.exportNumber(input.left, input.right)
+            }
+
+        val PROP_STRING_SET =
+            IAspectValuePropagator<ApacheTriple<PartTarget, IAspectProperties, String>, Unit> { input ->
+                WRITE_COMPUTER_COMPONENT.exportString(input.left, input.right)
+            }
+
+        val PROP_NBT_SET =
+            IAspectValuePropagator<ApacheTriple<PartTarget, IAspectProperties, NBTTagCompound>, Unit> { input ->
+                WRITE_COMPUTER_COMPONENT.exportNBT(input.left, input.right)
+            }
+
+        private fun <V: IValue, T: IValueType<V>, O> AspectBuilder<V, T, O>.appendDebugPrinter() = this
+            .handle{
+                OCID.log.info("[ASPECT-DEBUG-PRINT] $it")
+                it
+            }
+
+        private fun <V: IValue, T: IValueType<V>, O> AspectBuilder<V, T, O>.common(): AspectBuilder<V, T, O> = this
+                .appendKind(KIND)
+                .appendDeactivator(DEACTIVATOR)
+                .appendActivator(ACTIVATOR)
 
         val BUILDER_BOOLEAN
             = CyclopsAspectWriteBuilders.BUILDER_BOOLEAN
-                .appendKind(KIND)
                 .handle(CyclopsAspectWriteBuilders.PROP_GET_BOOLEAN)
-                .appendDeactivator(DEACTIVATOR)
-                .appendActivator(ACTIVATOR)
+                .handle(PROP_BOOLEAN_SET)
+                .common()
+
+        val BUILDER_NUMBER
+            = AspectWriteBuilders.getValue(AspectBuilder.forWriteType(ValueTypes.CATEGORY_NUMBER))
+                .handle { input ->
+                    ApacheTriple.of(input.left,  input.middle, ValueNumber.of(input.right).getRawValue())
+                }
+                .handle(PROP_NUMBER_SET)
+                .common()
+
+        val BUILDER_STRING
+            = CyclopsAspectWriteBuilders.BUILDER_STRING
+                .handle(CyclopsAspectWriteBuilders.PROP_GET_STRING)
+                .handle(PROP_STRING_SET)
+                .common()
+
+        val BUILDER_NBT
+            = CyclopsAspectWriteBuilders.BUILDER_NBT
+                .handle(CyclopsAspectWriteBuilders.PROP_GET_NBT)
+                .handle(PROP_NBT_SET)
+                .common()
     }
 }

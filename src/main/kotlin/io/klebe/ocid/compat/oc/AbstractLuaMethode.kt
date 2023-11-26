@@ -1,4 +1,4 @@
-package io.klebe.ocid.oc
+package io.klebe.ocid.compat.oc
 
 abstract class AbstractLuaMethode(
     override val name: String,
