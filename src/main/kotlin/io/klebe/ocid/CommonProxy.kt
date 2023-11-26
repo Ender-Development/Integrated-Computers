@@ -1,7 +1,8 @@
 package io.klebe.ocid
 
+import io.klebe.ocid.compat.id.part.read.PartTypeComputerReader
 import io.klebe.ocid.compat.oc.Driver
-import io.klebe.ocid.compat.id.part.PartTypeComputerWriter
+import io.klebe.ocid.compat.id.part.write.PartTypeComputerWriter
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer
 import net.minecraft.tileentity.TileEntity
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
@@ -21,6 +22,7 @@ open class CommonProxy : CommonProxyComponent() {
         OCID.log.info("preInit")
         IntegratedDynamics._instance.registryManager.getRegistry(IPartTypeRegistry::class.java)?.let { registry ->
             registry.register(PartTypeComputerWriter)
+            registry.register(PartTypeComputerReader)
         }
     }
 

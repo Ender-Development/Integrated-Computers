@@ -2,32 +2,25 @@ package io.klebe.ocid.compat.id.part.aspect.write
 
 import io.klebe.ocid.OCID
 import io.klebe.ocid.compat.id.evaluate.variable.ValueNumber
-import io.klebe.ocid.compat.id.part.aspect.write.computer.IWriteComputerComponent
-import io.klebe.ocid.compat.id.part.aspect.write.computer.WriteComputerComponent
 import net.minecraft.block.state.IBlockState
 import net.minecraft.init.Blocks
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
-import org.apache.commons.lang3.tuple.Triple
 import org.cyclops.integrateddynamics.api.evaluate.variable.IValue
 import org.cyclops.integrateddynamics.api.evaluate.variable.IValueType
 import org.cyclops.integrateddynamics.api.part.PartTarget
 import org.cyclops.integrateddynamics.api.part.aspect.property.IAspectProperties
 import org.cyclops.integrateddynamics.api.part.write.IPartStateWriter
 import org.cyclops.integrateddynamics.api.part.write.IPartTypeWriter
-import org.cyclops.integrateddynamics.core.evaluate.variable.ValueTypeBoolean.ValueBoolean
-import org.cyclops.integrateddynamics.core.evaluate.variable.ValueTypeCategoryNumber
 import org.cyclops.integrateddynamics.core.evaluate.variable.ValueTypes
 import org.cyclops.integrateddynamics.core.part.aspect.build.AspectBuilder
 import org.cyclops.integrateddynamics.core.part.aspect.build.IAspectValuePropagator
 import org.cyclops.integrateddynamics.core.part.aspect.build.IAspectWriteActivator
 import org.cyclops.integrateddynamics.core.part.aspect.build.IAspectWriteDeactivator
-import org.cyclops.integrateddynamics.part.aspect.write.AspectWriteBuilders
-
-typealias CyclopsAspectWriteBuilders = org.cyclops.integrateddynamics.part.aspect.write.AspectWriteBuilders
-typealias ApacheTriple<A, B, C> = org.apache.commons.lang3.tuple.Triple<A, B, C>
+import org.cyclops.integrateddynamics.part.aspect.write.AspectWriteBuilders as CyclopsAspectWriteBuilders
+import org.apache.commons.lang3.tuple.Triple as ApacheTriple
 
 object AspectWriteBuilders {
 
@@ -150,12 +143,6 @@ object AspectWriteBuilders {
                 WRITE_COMPUTER_COMPONENT.exportNBT(input.left, input.right)
             }
 
-        private fun <V: IValue, T: IValueType<V>, O> AspectBuilder<V, T, O>.appendDebugPrinter() = this
-            .handle{
-                OCID.log.info("[ASPECT-DEBUG-PRINT] $it")
-                it
-            }
-
         private fun <V: IValue, T: IValueType<V>, O> AspectBuilder<V, T, O>.common(): AspectBuilder<V, T, O> = this
                 .appendKind(KIND)
                 .appendDeactivator(DEACTIVATOR)
@@ -168,7 +155,7 @@ object AspectWriteBuilders {
                 .common()
 
         val BUILDER_NUMBER
-            = AspectWriteBuilders.getValue(AspectBuilder.forWriteType(ValueTypes.CATEGORY_NUMBER))
+            = CyclopsAspectWriteBuilders.getValue(AspectBuilder.forWriteType(ValueTypes.CATEGORY_NUMBER))
                 .handle { input ->
                     ApacheTriple.of(input.left,  input.middle, ValueNumber.of(input.right).getRawValue())
                 }

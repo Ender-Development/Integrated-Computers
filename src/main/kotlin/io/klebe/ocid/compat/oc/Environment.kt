@@ -1,19 +1,23 @@
 package io.klebe.ocid.compat.oc
 
-import io.klebe.ocid.compat.part.IPartTypeComputerCompat
+import io.klebe.ocid.compat.id.part.aspect.read.IReadComputerComponent
+import io.klebe.ocid.compat.id.part.aspect.read.ReadComputerComponent
+import io.klebe.ocid.compat.id.part.aspect.write.WriteComputerComponent
+import io.klebe.ocid.compat.part.IComputerPart
 import li.cil.oc.api.driver.NamedBlock
 import li.cil.oc.api.machine.Arguments
 import li.cil.oc.api.machine.Context
 import li.cil.oc.api.Network
 import li.cil.oc.api.network.ManagedPeripheral
+import li.cil.oc.api.network.Node
 import li.cil.oc.api.network.Visibility
 import li.cil.oc.api.prefab.AbstractManagedEnvironment
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
-import org.cyclops.cyclopscore.datastructure.DimPos
 import org.cyclops.integrateddynamics.api.part.PartPos
 import org.cyclops.integrateddynamics.core.tileentity.TileMultipartTicking
 
-class Environment(val tileEntity: TileMultipartTicking, val part: IPartTypeComputerCompat, val side: EnumFacing) :
+class Environment(val tileEntity: TileMultipartTicking, val part: IComputerPart, val side: EnumFacing) :
     AbstractManagedEnvironment(),
     ManagedPeripheral,
     NamedBlock {
@@ -71,6 +75,45 @@ class Environment(val tileEntity: TileMultipartTicking, val part: IPartTypeCompu
 
     override fun preferredName(): String = part.preferredName
     override fun priority(): Int = 0 // ¯\_(ツ)_/¯
+
+    override fun save(nbt: NBTTagCompound) {
+        super.save(nbt)
+        ReadComputerComponent.states[position]?.let { state ->
+            nbt.setTag("computer_reader_state", NBTTagCompound().apply {
+                this.setByte("type", state.type.id)
+                this.setString("value", state.value.toString());
+            })
+        }
+    }
+
+    override fun load(nbt: NBTTagCompound) {
+        super.load(nbt)
+        nbt.getCompoundTag("computer_reader_state").let { stateTag ->
+            stateTag.getByte("type").let { typeId ->
+                val type = IReadComputerComponent.State.Type.ofID(typeId)
+                val rawValue = stateTag.getString("value")
+
+                val value: IReadComputerComponent.State = when (type) {
+                    IReadComputerComponent.State.Type.BOOLEAN -> IReadComputerComponent.State.of(rawValue.toBoolean())
+                    IReadComputerComponent.State.Type.NUMBER -> {
+                        if (rawValue.toLong().toString() == rawValue) {
+                            IReadComputerComponent.State.of(rawValue.toLong())
+                        } else {
+                            IReadComputerComponent.State.of(rawValue.toDouble())
+                        }
+                    }
+                    IReadComputerComponent.State.Type.STRING -> IReadComputerComponent.State.of(rawValue)
+                }
+
+                ReadComputerComponent.states[position] = value
+            }
+        }
+    }
+
+    override fun onDisconnect(node: Node?) {
+        super.onDisconnect(node)
+        ReadComputerComponent.states.remove(position)
+    }
 
     init{
         setNode(Network.newNode(this, Visibility.Network).create());

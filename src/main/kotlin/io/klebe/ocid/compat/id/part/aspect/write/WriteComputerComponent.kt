@@ -1,8 +1,6 @@
-package io.klebe.ocid.compat.id.part.aspect.write.computer
+package io.klebe.ocid.compat.id.part.aspect.write
 
-import io.klebe.ocid.OCID
 import net.minecraft.nbt.NBTTagCompound
-import org.cyclops.cyclopscore.datastructure.DimPos
 import org.cyclops.integrateddynamics.api.part.PartPos
 import org.cyclops.integrateddynamics.api.part.PartTarget
 

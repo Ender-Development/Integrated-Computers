@@ -1,6 +1,6 @@
 package io.klebe.ocid.compat.oc
 
-import io.klebe.ocid.compat.part.IPartTypeComputerCompat
+import io.klebe.ocid.compat.part.IComputerPart
 import li.cil.oc.api.driver.DriverBlock
 import li.cil.oc.api.network.ManagedEnvironment
 import net.minecraft.util.EnumFacing
@@ -16,7 +16,7 @@ object Driver : DriverBlock {
         val tileEntity = world.getTileEntity(pos)
 
         if (blockState.block == BlockCable.getInstance() && tileEntity is TileMultipartTicking) {
-            return tileEntity.partContainer?.parts?.get(facing.opposite) is IPartTypeComputerCompat
+            return tileEntity.partContainer?.parts?.get(facing.opposite) is IComputerPart
         }
 
         return false
@@ -29,7 +29,7 @@ object Driver : DriverBlock {
         if (blockState.block == BlockCable.getInstance() && tileEntity is TileMultipartTicking) {
             val possiblePart: IPartType<*, *>? = tileEntity.partContainer?.parts?.get(facing.opposite)
             return possiblePart?.let { part ->
-                if (part is IPartTypeComputerCompat) {
+                if (part is IComputerPart) {
                     Environment(tileEntity, part, facing.opposite)
                 } else null
             }
