@@ -67,8 +67,8 @@ minecraft {
     // Add any properties you want to swap out for a dynamic value at build time here
     // Any properties here will be added to a class at build time, the name can be configured below
     // Example:
-    // injectedTags.put('VERSION', project.version)
-    // injectedTags.put('MOD_ID', project.archives_base_name)
+    injectedTags.put('VERSION', project.version)
+    injectedTags.put('MODNAME', project.mod_name)
 }
 
 // Generate a group.archives_base_name.Tags class
@@ -158,13 +158,15 @@ processResources {
     // This will ensure that this task is redone when the versions change
     inputs.property 'version', project.version
     inputs.property 'mcversion', project.minecraft.version
+    inputs.property 'mod_name', project.mod_name
     
     // Replace various properties in mcmod.info and pack.mcmeta if applicable
     filesMatching(['mcmod.info', 'pack.mcmeta']) { fcd ->
         // Replace version and mcversion
         fcd.expand (
                 'version': project.version,
-                'mcversion': project.minecraft.version
+                'mcversion': project.minecraft.version,
+                'modname': project.mod_name
         )
     }
     
@@ -199,16 +201,16 @@ idea {
     project {
         settings {
             runConfigurations {
-                "1. Run Client"(Gradle) {
+                "Run Client"(Gradle) {
                     taskNames = ["runClient"]
                 }
-                "2. Run Server"(Gradle) {
+                "Run Server"(Gradle) {
                     taskNames = ["runServer"]
                 }
-                "3. Run Obfuscated Client"(Gradle) {
+                "Run Obfuscated Client"(Gradle) {
                     taskNames = ["runObfClient"]
                 }
-                "4. Run Obfuscated Server"(Gradle) {
+                "Run Obfuscated Server"(Gradle) {
                     taskNames = ["runObfServer"]
                 }
             }

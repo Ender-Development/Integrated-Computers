@@ -11,6 +11,20 @@ import org.cyclops.cyclopscore.init.ModBaseVersionable
 import org.cyclops.cyclopscore.init.RecipeHandler
 import org.cyclops.cyclopscore.proxy.ICommonProxy
 
+/*
+    TODO v1.0.0-RC1
+    - [ ] Creative tab
+    - [ ] Recipes
+    - [ ] Textures & Models
+    - [ ] I18n
+    - [ ] Config
+    - [ ] Clean up
+    - [ ] Docs
+    - [ ] CI
+    - [ ] Release
+ */
+
+
 @Mod(
         modid = OCIDMeta.MODID,
         name = OCIDMeta.NAME,
@@ -20,12 +34,12 @@ import org.cyclops.cyclopscore.proxy.ICommonProxy
 object OCID : ModBaseVersionable(OCIDMeta.MODID, OCIDMeta.NAME, OCIDMeta.VERSION) {
 
     @JvmStatic
-    val meta = OCIDMeta;
+    val META = OCIDMeta
 
-    val MODID: String get() = meta.MODID
-    val NAME: String get() = meta.NAME
-    val VERSION: String get() = meta.VERSION
-    val DEPENDENCIES: String get() = meta.DEPENDENCIES
+    val MODID: String get() = META.MODID
+    val NAME: String get() = META.NAME
+    val VERSION: String get() = META.VERSION
+    val DEPENDENCIES: String get() = META.DEPENDENCIES
 
     private lateinit var logger: Logger
 
@@ -44,6 +58,7 @@ object OCID : ModBaseVersionable(OCIDMeta.MODID, OCIDMeta.NAME, OCIDMeta.VERSION
     override fun preInit(e: FMLPreInitializationEvent) {
         super.preInit(e)
         this.logger = e.modLog
+        log.info("Loading $NAME v$VERSION")
         //MinecraftForge.EVENT_BUS.register(this.proxy)
         this.proxy.preInit(e)
     }

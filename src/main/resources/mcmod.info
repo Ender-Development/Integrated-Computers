@@ -1,7 +1,7 @@
 [
 {
   "modid": "ocid",
-  "name": "OCID",
+  "name": "${modname}",
   "description": "Example placeholder mod.",
   "version": "${version}",
   "mcversion": "${mcversion}",
