@@ -1,0 +1,15 @@
+# Parts
+parttype.parttypes.ocid.computer_writer.name=Computer Writer
+parttype.parttypes.ocid.computer_reader.name=Computer Reader
+
+# Aspects
+aspect.aspects.integrateddynamics.write.boolean.computer.name=Export Boolean
+aspect.aspects.integrateddynamics.write.number.computer.name=Export Number
+aspect.aspects.integrateddynamics.write.string.computer.name=Export String
+aspect.aspects.integrateddynamics.write.nbt.computer.name=Export NBT
+
+aspect.aspects.integrateddynamics.read.boolean.computer.name=Import Boolean
+aspect.aspects.integrateddynamics.read.double.computer.name=Import Number as Double
+aspect.aspects.integrateddynamics.read.long.computer.name=Import Number as Long
+aspect.aspects.integrateddynamics.read.string.computer.name=Import String
+aspect.aspects.integrateddynamics.read.boolean.computer.isnil.name=NIL Provided

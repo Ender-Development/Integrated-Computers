@@ -1,21 +1,18 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "integrateddynamics:writer"
+    "model": "ocid:writer"
   },
   "variants": {
     "status": {
       "active": {"textures": {
-        "back" : "ocid:parts/computer_reader_back",
-        "front": "ocid:parts/computer_writer_front_active"
+        "main": "ocid:parts/computer_active"
       }},
       "inactive": {"textures": {
-        "back" : "ocid:parts/computer_reader_back",
-        "front": "ocid:parts/computer_writer_front_inactive"
+        "main": "ocid:parts/computer"
       }},
       "error": {"textures": {
-        "back" : "ocid:parts/computer_reader_back",
-        "front": "ocid:parts/computer_writer_front_error"
+        "main": "ocid:parts/computer_error"
       }}
     },
     "facing": {
@@ -27,7 +24,7 @@
       "down" : { "x": 270 }
     },
     "inventory": {
-      "model": "integrateddynamics:writer"
+      "model": "ocid:writer"
     }
   }
 }

@@ -1,0 +1,23 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "integrateddynamics:block/part",
+	"textures": {
+		"particle": "ocid:parts/computer",
+		"mein": "ocid:parts/computer"
+	},
+	"elements": [
+		{
+			"name": "main",
+			"from": [4, 4, 11],
+			"to": [12, 12, 16],
+			"faces": {
+				"north": {"uv": [8, 8, 16, 16], "texture": "#mein"},
+				"east": {"uv": [0, 0, 8, 5], "rotation": 90, "texture": "#mein"},
+				"south": {"uv": [0, 8, 8, 16], "texture": "#mein"},
+				"west": {"uv": [0, 0, 8, 5], "rotation": 270, "texture": "#mein"},
+				"up": {"uv": [0, 0, 8, 5], "texture": "#mein"},
+				"down": {"uv": [0, 0, 8, 5], "rotation": 180, "texture": "#mein"}
+			}
+		}
+	]
+}
