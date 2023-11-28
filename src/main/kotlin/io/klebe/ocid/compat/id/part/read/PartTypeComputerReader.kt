@@ -7,6 +7,8 @@ import io.klebe.ocid.compat.oc.Environment
 import io.klebe.ocid.compat.part.IComputerPart
 import li.cil.oc.api.machine.Arguments
 import li.cil.oc.api.machine.Context
+import net.minecraft.util.math.AxisAlignedBB
+import net.minecraftforge.common.ticket.AABBTicket
 import org.cyclops.integrateddynamics.core.part.aspect.AspectRegistry
 import org.cyclops.integrateddynamics.core.part.read.PartStateReaderBase
 
@@ -14,6 +16,7 @@ object PartTypeComputerReader :
     PartTypeReadBase<PartTypeComputerReader, PartStateReaderBase<PartTypeComputerReader>>("computer_reader"),
     IComputerPart
 {
+
 
     init {
         AspectRegistry.getInstance().register(this, listOf(

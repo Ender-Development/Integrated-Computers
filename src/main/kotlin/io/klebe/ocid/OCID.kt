@@ -1,6 +1,7 @@
 package io.klebe.ocid
 
 import net.minecraft.creativetab.CreativeTabs
+import net.minecraftforge.common.config.Configuration
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.SidedProxy
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
@@ -10,14 +11,15 @@ import org.apache.logging.log4j.Logger
 import org.cyclops.cyclopscore.init.ModBaseVersionable
 import org.cyclops.cyclopscore.init.RecipeHandler
 import org.cyclops.cyclopscore.proxy.ICommonProxy
+import org.cyclops.integrateddynamics.IntegratedDynamics
 
 /*
     TODO v1.0.0-RC1
-    - [ ] Creative tab
+    - [X] Creative tab
     - [ ] Recipes
-    - [ ] Textures & Models
-    - [ ] I18n
-    - [ ] Config
+    - [X] Textures & Models
+    - [X] I18n
+    - [X] Config
     - [ ] Clean up
     - [ ] Docs
     - [ ] CI
@@ -46,6 +48,9 @@ object OCID : ModBaseVersionable(OCIDMeta.MODID, OCIDMeta.NAME, OCIDMeta.VERSION
     @SidedProxy(serverSide = "io.klebe.ocid.CommonProxy", clientSide = "io.klebe.ocid.ClientProxy")
     private lateinit var private_proxy: CommonProxy
 
+    lateinit var config: Config
+        private set
+
     val log
         get() = logger
 
@@ -59,7 +64,7 @@ object OCID : ModBaseVersionable(OCIDMeta.MODID, OCIDMeta.NAME, OCIDMeta.VERSION
         super.preInit(e)
         this.logger = e.modLog
         log.info("Loading $NAME v$VERSION")
-        //MinecraftForge.EVENT_BUS.register(this.proxy)
+        config = Config(Configuration(e.suggestedConfigurationFile))
         this.proxy.preInit(e)
     }
 
@@ -75,6 +80,6 @@ object OCID : ModBaseVersionable(OCIDMeta.MODID, OCIDMeta.NAME, OCIDMeta.VERSION
         this.proxy.postInit(e)
     }
 
-    override fun constructDefaultCreativeTab(): CreativeTabs = CreativeTabs.REDSTONE
+    override fun constructDefaultCreativeTab(): CreativeTabs = IntegratedDynamics._instance.defaultCreativeTab
     override fun getProxy(): ICommonProxy = proxy
 }

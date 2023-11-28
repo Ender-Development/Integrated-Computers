@@ -21,8 +21,8 @@ open class CommonProxy : CommonProxyComponent() {
     open fun preInit(e: FMLPreInitializationEvent) {
         OCID.log.info("preInit")
         IntegratedDynamics._instance.registryManager.getRegistry(IPartTypeRegistry::class.java)?.let { registry ->
-            registry.register(PartTypeComputerWriter)
-            registry.register(PartTypeComputerReader)
+            if (OCID.config.writerEnabled) registry.register(PartTypeComputerWriter)
+            if (OCID.config.readerEnabled) registry.register(PartTypeComputerReader)
         }
     }
 

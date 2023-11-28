@@ -41,6 +41,7 @@ object Aspects {
                 .handle { input -> ValueString.of(input ?: "") }
                 .buildRead()
             val IS_NIL = AspectReadBuilders.Computer.BUILDER_BOOLEAN
+                .appendKind("isnil")
                 .handle { input -> AspectReadBuilders.Computer.READ_COMPUTER_COMPONENT[input.left.center] == null }
                 .handle { input -> ValueBoolean.of(input) }
                 .buildRead()
